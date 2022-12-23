@@ -202,7 +202,7 @@ int32_t FMC_Erase(uint32_t u32PageAddr)
   * @note     Global error code g_FMC_i32ErrCode
   *           -1  Erase failed or erase time-out
   */
-int32_t FMC_Erase_Bank(uint32_t u32BankAddr)
+int32_t FMC_EraseBank(uint32_t u32BankAddr)
 {
     int32_t  ret = 0;
     int32_t i32TimeOutCnt;
@@ -283,7 +283,9 @@ int32_t FMC_EraseXOM(uint32_t u32XomNum)
                 u32Addr = (FMC->XOMR3STS & 0xFFFFFF00u) >> 8u;
                 break;
             default:
-                break;
+                /* Should not be here */
+                err = -2;
+                goto lexit;
             }
             FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
             FMC->ISPADDR = u32Addr;
@@ -314,6 +316,8 @@ int32_t FMC_EraseXOM(uint32_t u32XomNum)
             err = -1;
         }
     }
+
+lexit:
     g_FMC_i32ErrCode = err;
     return err;
 }
